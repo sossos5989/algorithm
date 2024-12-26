@@ -31,11 +31,11 @@ int main() {
             maxLen = max(maxLen, DP[i]);
         }
 
-        vector<vector<int>> nxt(n + 1);
+        vector<vector<int>> next(n + 1);
         for (int i = 1; i <= n; i++) {
             for (int j = n; j >= i + 1; j--) {
                 if (arr[j] > arr[i] && DP[j] == DP[i] + 1) {
-                    nxt[i].push_back(j);
+                    next[i].push_back(j);
                 }
             }
         }
@@ -51,18 +51,17 @@ int main() {
                 return 1;
             }
             long long sumCnt = 0;
-            for (int nx : nxt[cur]) {
-                long long tmp = paths_count(nx);
-                // 누적 과정에서 k를 넘어가면 k+1로 “고정”
+            for (int nx : next[cur]) {
+                long long tmp = paths_count(nx);  // 오버플로우 처리
                 if (sumCnt + tmp >= k + 1) {
-                    sumCnt = k + 1; 
+                    sumCnt = k + 1;
                     break;
                 } else {
                     sumCnt += tmp;
                 }
             }
             cacheCnt[cur] = sumCnt;
-            return sumCnt;
+            return sumCnt; 
         };
 
         vector<int> source;
@@ -82,11 +81,10 @@ int main() {
             totalPaths += cnt;
         }
 
-
-        // nmaxLen 출력
+        // maxLen 출력
         cout << maxLen << "\n";
 
-        // (1) source 중에서 k에 해당하는 시작 노드 찾기
+        // source 중에서 k에 해당하는 시작 노드 찾기
         int start = -1;
         for (int s : source) {
             long long cnt = cacheCnt[s];
@@ -98,7 +96,7 @@ int main() {
             }
         }
 
-        // (2) start부터 자식 노드 nxt[cur]를 순회하며 k번째 경로 구성
+        // start부터 자식 노드 next[cur]를 순회하며 k번째 경로 구성
         vector<long long> lisPath;
         int cur = start;
         while (true) {
@@ -107,7 +105,7 @@ int main() {
             if (DP[cur] == maxLen) {
                 break;
             }
-            for (int nx : nxt[cur]) {
+            for (int nx : next[cur]) {
                 long long cnt = cacheCnt[nx];
                 if (cnt >= k) {
                     cur = nx;
