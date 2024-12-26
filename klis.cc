@@ -1,101 +1,129 @@
-#include <iostream>
 #include <vector>
-#include <stack>
-#include <algorithm>
-#include <cstring>
-#define fastIO cin.tie(0)->sync_with_stdio(0)
+#include <iostream>
+#include <functional>
 using namespace std;
 
-int path_size[501];
-int calculatePath(int index, vector<vector<int>>& next) {
-    int& ret = path_size[index];
-    if (ret != -1) return ret;
-
-    if (!next[index].size()) return ret = 1;  // base case
-    ret = 0;
-    for (int element : next[index]) {
-        ret += calculatePath(element, next);
-    }
-    return ret;
-}
-
-// 구현을 못하겠어서 gpt형님 사용..
-void findKthLIS(int index, int& k, vector<vector<int>>& next_element, vector<int>& result) {
-    result.push_back(index);
-
-    if (next_element[index].empty()) return;  // 더 이상 다음 노드가 없으면 종료
-
-    for (int element : next_element[index]) {
-        if (path_size[element] < k) {
-            k -= path_size[element];  // 해당 경로를 건너뜀
-        } else {
-            findKthLIS(element, k, next_element, result);  // k번째 경로를 탐색
-            break;
-        }
-    }
-}
-
 int main() {
-    fastIO;
-    int repeat;
-    cin >> repeat;
-    while (repeat--) {
-        int n, k; 
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int n;
+        long long k;
         cin >> n >> k;
 
-        vector<int> list(n + 1);
-        for (int i = 1; i <= n; i++) cin >> list[i];  // list[1...n]
-
-        // list[1...i]까지의 최대 LIS 길이를 계산해 DP table에 저장합니다.
-        vector<int> DP(n + 1); DP[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            DP[i] = 1;
-            for (int j = 1; j < i; j++) {
-                if (list[i] > list[j] && DP[i] <= DP[j] + 1) {
-                    if (DP[i] < DP[j] + 1) {
-                        DP[i] = DP[j] + 1;
-                    }
-                }
-            }
-        }  // O(n^2)
-        
-        // 각 element의 다음 element를 가리키는 edge를 next_element에 저장합니다.
-        // 이후 graph의 source에 해당하는 element들을 source에 저장합니다.
-        vector<vector<int>> next_element(n + 1);
-        vector<int> source;
+        vector<long long> arr(n + 1);
         for (int i = 1; i <= n; i++) {
-            for (int j = i + 1; j <= n; j++) {
-                if (list[j] > list[i] && DP[j] == DP[i] + 1) {
-                    next_element[i].push_back(j);
-                }
-            }
-            if (next_element[i].size() && DP[i] == 1) source.push_back(i);
-        }  // next_elements, source O(n^2)
-
-        // 이후 next_element를 이용하여 element에서 sink까지의 경우의 수를 저장하는 path_size를 저장합니다.
-        memset(path_size, -1, sizeof(path_size));
-        for (int r : source) {
-            calculatePath(r, next_element);
+            cin >> arr[i];
         }
 
-        // k번째 LIS를 탐색
-        vector<int> result;
-        for (int r : source) {
-            if (path_size[r] < k) {
-                k -= path_size[r];  // source 노드에서 해당 경로를 건너뜀
-            } else {
-                findKthLIS(r, k, next_element, result);  // k번째 LIS 경로 탐색
+        vector<int> DP(n + 1, 1);
+        int maxLen = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j < i; j++) {
+                if (arr[j] < arr[i] && DP[j] + 1 > DP[i]) {
+                    DP[i] = DP[j] + 1;
+                }
+            }
+            maxLen = max(maxLen, DP[i]);
+        }
+
+        vector<vector<int>> nxt(n + 1);
+        for (int i = 1; i <= n; i++) {
+            for (int j = n; j >= i + 1; j--) {
+                if (arr[j] > arr[i] && DP[j] == DP[i] + 1) {
+                    nxt[i].push_back(j);
+                }
+            }
+        }
+
+        vector<long long> cacheCnt(n+1, -1);
+        function<long long(int)> paths_count = [&](int cur) -> long long {
+            if (cacheCnt[cur] != -1) {
+                return cacheCnt[cur];
+            }
+            // 마지막 노드(DP[cur] == maxLen)면 경로 1개
+            if (DP[cur] == maxLen) {
+                cacheCnt[cur] = 1;
+                return 1;
+            }
+            long long sumCnt = 0;
+            for (int nx : nxt[cur]) {
+                long long tmp = paths_count(nx);
+                // 누적 과정에서 k를 넘어가면 k+1로 “고정”
+                if (sumCnt + tmp >= k + 1) {
+                    sumCnt = k + 1; 
+                    break;
+                } else {
+                    sumCnt += tmp;
+                }
+            }
+            cacheCnt[cur] = sumCnt;
+            return sumCnt;
+        };
+
+        vector<int> source;
+        for (int i = n; i >= 1; i--) {
+            if (DP[i] == 1) {
+                source.push_back(i);
+            }
+        }
+
+        long long totalPaths = 0;
+        for (int s : source) {
+            long long cnt = paths_count(s);
+            if (totalPaths + cnt >= k + 1) {
+                totalPaths = k + 1;
                 break;
             }
+            totalPaths += cnt;
         }
 
-        // k번째 LIS 출력
-        cout << "k-th LIS: ";
-        for (int idx : result) {
-            cout << list[idx] << " ";
+
+        // nmaxLen 출력
+        cout << maxLen << "\n";
+
+        // (1) source 중에서 k에 해당하는 시작 노드 찾기
+        int start = -1;
+        for (int s : source) {
+            long long cnt = cacheCnt[s];
+            if (cnt >= k) {
+                start = s;
+                break;
+            } else {
+                k -= cnt;  // k번째 경로가 아니므로 k에서 빼주기
+            }
+        }
+
+        // (2) start부터 자식 노드 nxt[cur]를 순회하며 k번째 경로 구성
+        vector<long long> lisPath;
+        int cur = start;
+        while (true) {
+            lisPath.push_back(arr[cur]);
+            // 이미 마지막 노드(길이가 maxLen)라면 종료
+            if (DP[cur] == maxLen) {
+                break;
+            }
+            for (int nx : nxt[cur]) {
+                long long cnt = cacheCnt[nx];
+                if (cnt >= k) {
+                    cur = nx;
+                    break;
+                } else {
+                    k -= cnt;
+                }
+            }
+        }
+
+        // 결과 출력
+        for (auto &val : lisPath) {
+            cout << val << " ";
         }
         cout << "\n";
-        
     }
+
     return 0;
 }
