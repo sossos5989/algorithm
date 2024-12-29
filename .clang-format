@@ -5,7 +5,7 @@ IndentWidth: 4
 TabWidth: 4
 
 # 기타 설정
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: true
 AlwaysBreakBeforeMultilineStrings: false
 ColumnLimit: 80
 
