@@ -28,6 +28,7 @@ int count(int index, int taken, int mod, int less) {
     }
     return ret;
 }
+
 int main() {
     fastIO;
     int repeat;
