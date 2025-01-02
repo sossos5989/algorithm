@@ -11,10 +11,6 @@ using namespace std;
 // 3. 왼쪽 둘 제거
 // 4. 오른쪽 둘 제거
 
-// bool을 줘서 매번 3, 4번을 선택할 수 있는지 여부를 준다.
-// 뭐 그다음엔 +-로 주면 되겟지.. 이것도 아까 틱택토 문제처럼 서로 - +가
-// 번갈아가면서 구현해도 좋을 듯하다. 더블 포인터를 써서 구현 ?
-
 int n;
 int list[50];
 
@@ -26,7 +22,7 @@ int function(int a, int b, int HWturn) {
     if (a == b && !HWturn) return -list[a];
 
     int &ret = DP[a][b][HWturn];
-    if (ret != -1) return ret;
+    if (ret != -987654321) return ret;
     ret = 0;
     if (HWturn) {
         ret = max(function(a + 1, b, !HWturn) + list[a],
@@ -57,7 +53,13 @@ int main() {
         for (int i = 0; i < n; i++) {
             cin >> list[i];
         }
-        memset(DP, -1, sizeof(DP));
+        for (int i = 0; i < 50; i++) {
+            for (int j = 0; j < 50; j++) {
+                DP[i][j][0] = -987654321;
+                DP[i][j][1] = -987654321;
+            }
+        }
+
         cout << function(0, n - 1, 1) << endl;
     }
     return 0;
