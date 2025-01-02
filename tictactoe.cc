@@ -45,9 +45,14 @@ int bijection(const vector<string> &board) {
     return ret;
 }
 
-char determineNextTurn(const vector<string> &board) {
-    int xCount = 0, oCount = 0;
+int DP[19683];
+int canWin(vector<string> &board) {
+    if (isFinished(board)) return -1;
+    int &ret = DP[bijection(board)];
+    if (ret != -2) return ret;
 
+    int xCount = 0, oCount = 0;
+    char whosTurn;
     for (const string &row : board) {
         for (char cell : row) {
             if (cell == 'x')
@@ -58,23 +63,16 @@ char determineNextTurn(const vector<string> &board) {
     }
 
     // 조건에 따라 반환
-    if (xCount == oCount) return 'x';
-    if (xCount == oCount + 1) return 'o';
-    return '?';
-}
+    if (xCount == oCount) whosTurn = 'x';
+    if (xCount == oCount + 1) whosTurn = 'o';
 
-int DP[19683];
-int canWin(vector<string> &board, char turn) {
-    if (isFinished(board, (char)('o' + 'x' - turn))) return -1;
-    int &ret = DP[bijection(board)];
-    if (ret != -2) return ret;
     int minValue = 2;
     for (int y = 0; y < 3; y++) {
         for (int x = 0; x < 3; x++) {
             if (board[y][x] == '.') {
-                board[y][x] = turn;
+                board[y][x] = whosTurn;
                 minValue =
-                    min(minValue, canWin(board, (char)('o' + 'x' - turn)));
+                    min(minValue, canWin(board, (char)('o' + 'x' - whosTurn)));
                 board[y][x] = '.';
             }
         }
@@ -96,7 +94,7 @@ int main() {
             cin >> input[i];
         }
         string ans;
-        int WinLose = canWin(input, determineNextTurn(input));
+        int WinLose = canWin(input);
         if (WinLose == 0) {
             ans = "TIE";
         } else if (determineNextTurn(input) == 'x') {
