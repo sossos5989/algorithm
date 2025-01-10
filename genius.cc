@@ -156,7 +156,7 @@ vector<double> function3() {
     vector<double> ret(n);
     for (int song = 0; song < n; song++) {
         for (int start = 0; start < length[song]; start++) {
-            ret[song] += Wk[(3 - start) * n + song][3 * n];
+            ret[song] += Wk[(3 - start) * n + song][3 * n + 0];
         }
     }
     return ret;
