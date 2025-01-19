@@ -28,7 +28,6 @@ void init() {
     best = 50;
 }
 
-// 데이터를 전처리합니다.
 void initData() {
     friendToFoodsList.resize(n);
     // friendToFoodsList
