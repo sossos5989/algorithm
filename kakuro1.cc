@@ -129,19 +129,19 @@ int main() {
             known[hintIndex] = 0;
             length[hintIndex] = 0;
 
-            if (Dir == 0) {
-                int col = X + 1;
-                while (col <= n && color[Y][col] == 1) {
-                    hint[Y][col][0] = hintIndex;
-                    length[hintIndex]++;
-                    col++;
-                }
-            } else {
+            if (Dir) {
                 int row = Y + 1;
                 while (row <= n && color[row][X] == 1) {
                     hint[row][X][1] = hintIndex;
                     length[hintIndex]++;
                     row++;
+                }
+            } else {
+                int col = X + 1;
+                while (col <= n && color[Y][col] == 1) {
+                    hint[Y][col][0] = hintIndex;
+                    length[hintIndex]++;
+                    col++;
                 }
             }
         }
