@@ -60,7 +60,7 @@ vector<double> solve(const vector<double> &input) {
         double xlo = points[i], xhi = points[i + 1];
         double ylo = function(input, xlo), yhi = function(input, xhi);
 
-        // if (ylo * yhi > 0) continue;
+        if (ylo * yhi > 0) continue;
         if (ylo > yhi) {
             swap(ylo, yhi);
             swap(xlo, xhi);
