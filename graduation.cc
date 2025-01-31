@@ -38,9 +38,14 @@ int graduation(int mask, int sem) {
         }
     }
 
-    for (int subset = available; subset; subset = ((subset - 1) & available)) {
-        if (__builtin_popcount(subset) <= l) { // 최대 l개 선택
-            ret = min(ret, 1 + graduation(mask | subset, sem + 1));
+    if (__builtin_popcount(available) <= l) {
+        ret = min(ret, 1 + graduation(mask | available, sem + 1));
+    } else {
+        for (int subset = available; subset;
+             subset = ((subset - 1) & available)) {
+            if (__builtin_popcount(subset) == l) { // 최대 l개 선택
+                ret = min(ret, 1 + graduation(mask | subset, sem + 1));
+            }
         }
     }
     ret = min(ret, graduation(mask, sem + 1)); // 휴학
