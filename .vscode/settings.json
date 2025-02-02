@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "files.associations": {
         "functional": "cpp",
@@ -93,4 +94,67 @@
         "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
+=======
+{
+    "files.associations": {
+        "vector": "cpp",
+        "xutility": "cpp",
+        "format": "cpp",
+        "initializer_list": "cpp",
+        "xstring": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "atomic": "cpp",
+        "bit": "cpp",
+        "charconv": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "istream": "cpp",
+        "streambuf": "cpp",
+        "system_error": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cmath": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "exception": "cpp",
+        "ios": "cpp",
+        "iosfwd": "cpp",
+        "iterator": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "string": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "utility": "cpp",
+        "xfacet": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocinfo": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xmemory": "cpp",
+        "xtr1common": "cpp",
+        "algorithm": "cpp",
+        "optional": "cpp",
+        "sstream": "cpp",
+        "functional": "cpp",
+        "iomanip": "cpp",
+        "list": "cpp",
+        "random": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:/Program Files/LLVM/bin/clang++.exe"
+>>>>>>> fbf382d (Initialize repository in parent folder a)
 }
