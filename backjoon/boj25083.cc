@@ -2,14 +2,13 @@
 #define fastIO cin.tie(0)->sync_with_stdio(0)
 using namespace std;
 
-int n;
-
 int main() {
     fastIO;
-    cin >> n;
-
+    cout << R"leaf(         ,r'"7
+r`-_   ,'  ,/
+ \. ". L_r'
+   `~\/
+      |
+      |)leaf";
     return 0;
 }
-
-// 2^2n?
-// 미완

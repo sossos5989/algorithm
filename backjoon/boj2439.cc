@@ -3,13 +3,11 @@
 using namespace std;
 
 int n;
-
 int main() {
     fastIO;
     cin >> n;
-
+    for (int i = 1; i <= n; i++) {
+        cout << string(n - i, ' ') << string(i, '*') << "\n";
+    }
     return 0;
 }
-
-// 2^2n?
-// 미완

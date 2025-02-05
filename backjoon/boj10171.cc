@@ -2,14 +2,8 @@
 #define fastIO cin.tie(0)->sync_with_stdio(0)
 using namespace std;
 
-int n;
-
 int main() {
     fastIO;
-    cin >> n;
-
+    cout << "\\    /\\\n )  ( ')\n(  /  )\n \\(__)|";
     return 0;
 }
-
-// 2^2n?
-// 미완
