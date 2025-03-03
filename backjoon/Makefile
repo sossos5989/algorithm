@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -g
 
 # 타겟 파일 이름
 TARGET = test
-SOURCE = boj9461.cc
+SOURCE = boj10026.cc
 
 # 기본 타겟
 all: $(TARGET)
