@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -g
 
 # 타겟 파일 이름
 TARGET = test
-SOURCE = nthlon.cc
+SOURCE = tpath.cc
 
 # 기본 타겟
 all: $(TARGET)
