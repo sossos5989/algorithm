@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -g
 
 # 타겟 파일 이름
 TARGET = test
-SOURCE = boj11279.cc
+SOURCE = d.cc
 
 # 기본 타겟
 all: $(TARGET)
@@ -18,4 +18,4 @@ $(TARGET): test.o
 
 # 정리
 clean:
-	rm -f test.o $(TARGET)	
+	rm -f test.o $(TARGET)
