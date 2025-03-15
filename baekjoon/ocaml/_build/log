@@ -1,0 +1,20 @@
+# dune exec ./boj14935.exe
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/sossos5989/.cache/dune/db
+# Workspace root: /mnt/c/git/algorithm/baekjoon/ocaml
+# Auto-detected concurrency: 6
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /home/sossos5989/.opam/5.1.1/bin/ocamlc.opt -config > /tmp/dune_7e6bd0_output
+$ (cd _build/default && /home/sossos5989/.opam/5.1.1/bin/ocamldep.opt -modules -impl boj14935.ml) > _build/default/.boj14935.eobjs/dune__exe__Boj14935.impl.d
+$ (cd _build/default && /home/sossos5989/.opam/5.1.1/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I .boj14935.eobjs/byte -no-alias-deps -opaque -open Dune__exe -o .boj14935.eobjs/byte/dune__exe__Boj14935.cmo -c -impl boj14935.ml)
+$ (cd _build/default && /home/sossos5989/.opam/5.1.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I .boj14935.eobjs/byte -I .boj14935.eobjs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o .boj14935.eobjs/native/dune__exe__Boj14935.cmx -c -impl boj14935.ml)
+$ (cd _build/default && /home/sossos5989/.opam/5.1.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o boj14935.exe .boj14935.eobjs/native/dune__exe.cmx .boj14935.eobjs/native/dune__exe__Boj14935.cmx)
