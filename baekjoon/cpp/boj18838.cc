@@ -4,7 +4,7 @@
 #define fastIO cin.tie(0)->sync_with_stdio(0)
 using namespace std;
 
-long long INF = 1e18 + 1;
+long long INF = 1e18;
 
 int n;
 long long k;
@@ -15,8 +15,8 @@ vector<vector<int>> index(100010); // length의 특정 값이 나타나는 index
 vector<vector<long long>> ways(1); // 각 length에 해당하는 경우의 수
 vector<vector<pair<int, int>>> ptr(1); // 다음 단계의 ptr
 vector<vector<long long>> seg(1); // 경우의 수를 쿼리하기 위한 세그먼트 트리
-vector<vector<long long>> new_ways(1);     // 중복 처리를 한 새로운 경우의 수
-vector<vector<pair<int, int>>> new_ptr(1); // 다음 단계의 ptr
+vector<long long> vec;            // 이 단계에서 이것의 개수.. 몇 번 반복하는지
+vector<long long> cache;          // 다음 단계의 곱을 위한 것
 
 // make SegmentTree
 long long init(int node, int start, int end, vector<long long> &ori,
@@ -37,18 +37,6 @@ long long query(int node, int start, int end, int left, int right,
     long long cand = query(node * 2, start, mid, left, right, tree) +
                      query(node * 2 + 1, mid + 1, end, left, right, tree);
     return min(cand, INF);
-}
-
-void updateWays(int k, int i, int j) {
-    if (i > lis.size()) return;
-    if (k == 1) return;
-    long long cand = ways[i][j] * k;
-    if (cand / k != ways[i][j]) cand = INF;
-    ways[i][j] = cand;
-    int start = ptr[i][j].first, end = ptr[i][j].second;
-    for (int idx = start; idx <= end; idx++) {
-        updateWays(k, i + 1, idx);
-    }
 }
 
 int main() {
@@ -77,8 +65,6 @@ int main() {
     ways.resize(lis.size() + 1);
     seg.resize(lis.size() + 1);
     ptr.resize(lis.size() + 1);
-    new_ways.resize(lis.size() + 1);
-    new_ptr.resize(lis.size() + 1);
 
     // base, ways와 이를 기반으로 한 SegmentTree 만들기
     for (int i = 0; i < value[lis.size()].size(); i++) {
@@ -109,37 +95,109 @@ int main() {
         init(1, 0, ways[i].size() - 1, ways[i], seg[i]);
     }
 
-    // new_ways 중복제거 <- 이 로직이 개 어려워서 다시 만들거나 해야할듯 ??
-    for (int i = 1; i <= lis.size(); i++) {
-        long long prev = value[i][0];
-        vector<int> times(lis.size(), 0);
-        count.push_back(prev);
-        for (int j = 1; j < value[i].size(); j++) {
-            if (prev != value[i][j]) {
-                prev = value[i][j];
-            } else {
-            }
-        }
+    if (query(1, 0, ways[1].size() - 1, 0, ways[1].size() - 1, seg[1]) < k) {
+        cout << -1;
+        return 0;
     }
 
-    if (query(1, 0, new_ways[1].size() - 1, 0, new_ways[1].size() - 1, seg[1]) <
-        k)
-        cout << "-1";
-    else {
-        int lo = 0, hi = new_ways[1].size() - 1;
-        for (int i = 1; i <= lis.size(); i++) {
-            for (; hi >= lo; hi--) {
-                if (k > new_ways[i][hi])
-                    k -= new_ways[i][hi];
-                else {
-                    cout << value[i][hi] << " ";
-                    if (i == lis.size()) break;
-                    lo = ptr[i][hi].first;
-                    hi = ptr[i][hi].second;
+    // k번째 LIS를 구한다.
+    vec.assign(ways[1].size(), 1);
+
+    for (int i = 1; i < lis.size(); i++) {
+        int hi = ways[i].size() - 1;
+        long long now = value[i][hi];
+        long long sz = ways[i][hi] * vec[hi];
+        if (vec[hi] && ways[i][hi] && sz / vec[hi] != ways[i][hi]) sz = INF;
+
+        // 차분 배열 세팅
+        cache.assign(ways[i + 1].size() + 1, 0);
+        if (ptr[i][hi].first <= ptr[i][hi].second) {
+            cache[ptr[i][hi].first] += vec[hi];
+            cache[ptr[i][hi].second + 1] -= vec[hi];
+        }
+
+        for (int elem = ways[i].size() - 2; elem >= 0; elem--) {
+            long long cand = ways[i][elem] * vec[elem];
+            if (vec[elem] != 0 && ways[i][elem] != 0 &&
+                (cand / vec[elem] != ways[i][elem]))
+                cand = INF;
+
+            if (value[i][elem] == now) {
+                sz = min(INF, sz + cand);
+
+                // 차분 배열 세팅
+                if (ptr[i][elem].first <= ptr[i][elem].second) {
+                    cache[ptr[i][elem].first] += vec[elem];
+                    if (cache[ptr[i][elem].first] < 0)
+                        cache[ptr[i][elem].first] = 9 * INF;
+                    cache[ptr[i][elem].second + 1] -= vec[elem];
+                    if (cache[ptr[i][elem].second + 1] > 0)
+                        cache[ptr[i][elem].second + 1] = -9 * INF;
+                }
+
+            } else {
+                if (k > sz) {
+                    // k를 감소시킬 수 있음. 이전 원소와 현재 원소를 업데이트
+                    long long prevv = now;
+                    now = value[i][elem];
+
+                    k -= sz; // 감소 수행
+
+                    // sz를 새로운 것으로 업데이트
+                    sz = ways[i][elem] * vec[elem];
+                    if (vec[elem] != 0 && ways[i][elem] != 0 &&
+                        sz / vec[elem] != ways[i][elem])
+                        sz = INF;
+
+                    // cache 초기화를 수행한다.
+                    for (int xx = elem + 1;
+                         xx < ways[i].size() && value[i][xx] == prevv; xx++) {
+                        if (ptr[i][xx].first <= ptr[i][xx].second) {
+                            cache[ptr[i][xx].first] = 0;
+                            cache[ptr[i][xx].second + 1] = 0;
+                        }
+                    }
+
+                    // 차분 배열 세팅
+                    if (ptr[i][elem].first <= ptr[i][elem].second) {
+                        cache[ptr[i][elem].first] = vec[elem];
+                        cache[ptr[i][elem].second + 1] = -vec[elem];
+                    }
+                } else {
+                    // k 감소 불가. 현재 상태의 now와 cache를 들고 간다.
                     break;
                 }
             }
         }
+
+        // 원소를 출력한다.
+        cout << now << " ";
+
+        // 다음 단계를 준비한다..
+        vec.assign(ways[i + 1].size(), 0);
+
+        // 차분 배열
+        vec[0] = cache[0];
+        for (int p = 1; p < ways[i + 1].size(); p++) {
+            vec[p] = vec[p - 1] + cache[p];
+            if (INF - vec[p - 1] < cache[p]) vec[p] = INF;
+        }
     }
+
+    // 마지막 LIS의 원소에 대해 수행..
+    for (int i = vec.size() - 1; i >= 0; i--) {
+        if (k > vec[i]) {
+            k -= vec[i];
+        } else {
+            cout << value[lis.size()][i];
+            break;
+        }
+    }
+
+    // cout << '\n';
+    // for (auto &&i : vec) {
+    //     cout << i << " ";
+    // }
+
     return 0;
 }
