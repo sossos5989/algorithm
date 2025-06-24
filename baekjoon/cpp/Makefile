@@ -3,10 +3,13 @@ CXXFLAGS = -Wall -g
 
 # 타겟 파일 이름
 TARGET = test
-SOURCE = boj11444_2.cc
+SOURCE = boj5032.cc
 
 # 기본 타겟
 all: $(TARGET)
+
+touch:
+	touch $(SOURCE)
 
 # test.o 생성
 test.o: $(SOURCE)
